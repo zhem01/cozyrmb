@@ -1,0 +1,385 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}Cozy Creations - Your Custom Crafting Hub{% endblock %}
+
+{% block content %}
+<style>
+    /* Styles specific to home.html content */
+
+    .container {
+        max-width: 1100px; /* Wider container for main page */
+        margin: 50px auto;
+        padding: 0 25px;
+        text-align: center;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        /* New, more vibrant background image */
+        background-image: url('https://images.unsplash.com/photo-1517487881594-2787fef5ee4f?auto=format&fit=crop&w=1600&q=80'); /* Existing image, but can be swapped for a more impressive one if needed */
+        background-size: cover;
+        background-position: center;
+        border-radius: 25px; /* More rounded corners */
+        padding: 90px 50px; /* Increased padding for more presence */
+        margin-bottom: 70px; /* More space below hero */
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25); /* Deeper, more prominent shadow */
+        position: relative;
+        overflow: hidden;
+        display: flex; /* Use flex to center overlay content */
+        align-items: center;
+        justify-content: center;
+        min-height: 450px; /* Ensure a minimum height for impact */
+    }
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(122, 94, 94, 0.8); /* Slightly more opaque overlay for better text contrast */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-shadow: 3px 3px 12px rgba(0,0,0,0.6); /* Stronger text shadow for depth */
+        border-radius: 25px; /* Match parent border-radius */
+        animation: fadeInOverlay 1.5s ease-out; /* Fade in animation for the overlay */
+    }
+    .hero-overlay h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem; /* Even larger and more impactful */
+        margin-bottom: 25px;
+        letter-spacing: 2px; /* More letter spacing */
+        line-height: 1.1;
+        max-width: 90%; /* Prevent overflow on smaller screens */
+        animation: slideInUp 1s ease-out 0.5s forwards; /* Slide in animation for heading */
+        opacity: 0; /* Start invisible for animation */
+    }
+    .hero-overlay p {
+        font-size: 1.1rem; /* Larger paragraph text */
+        max-width: 800px; /* Wider text block */
+        margin-bottom: 50px; /* More space before button */
+        line-height: 1.5;
+        opacity: 0; /* Start invisible for animation */
+        animation: fadeIn 1s ease-out 1s forwards; /* Fade in animation for paragraph */
+    }
+    .hero-button {
+        display: inline-block;
+        background-color: #f0e6d6; /* Light, contrasting button */
+        color: #7a5e5e; /* Text matches header */
+        padding: 24px 55px; /* More generous padding */
+        font-size: 1.8rem; /* Larger font for button */
+        font-weight: 700;
+        border-radius: 45px; /* More rounded button */
+        text-decoration: none;
+        box-shadow: 0 12px 30px rgba(240, 230, 214, 0.6); /* Stronger shadow */
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        letter-spacing: 1.5px; /* More letter spacing */
+        opacity: 0; /* Start invisible for animation */
+        animation: fadeInScale 1s ease-out 1.5s forwards; /* Fade in and scale animation for button */
+    }
+    .hero-button:hover {
+        background-color: #e0d0c0;
+        transform: translateY(-7px) scale(1.03); /* More pronounced lift and slight scale */
+        box-shadow: 0 20px 45px rgba(240, 230, 214, 0.8); /* Stronger hover shadow */
+    }
+
+    /* Product Categories Section */
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        color: #7a5e5e;
+        font-size: 3.5rem; /* Larger section title */
+        margin-bottom: 60px; /* More space below title */
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.1); /* Stronger shadow */
+    }
+
+    .product-categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Slightly larger min-width for cards */
+        gap: 50px; /* More space between cards */
+        margin-bottom: 70px;
+        justify-content: center; /* Center grid items if they don't fill the row */
+    }
+    .category-card {
+        background: white;
+        border-radius: 20px; /* More rounded */
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Deeper shadow */
+        overflow: hidden;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.5s ease, box-shadow 0.5s ease; /* Slower, smoother transition */
+        border: 1px solid #f0f0f0; /* Subtle border */
+        text-decoration: none; /* Ensure link styling is removed */
+        color: #4a4a4a; /* Default text color */
+        display: flex; /* Use flexbox for card content */
+        flex-direction: column;
+    }
+    .category-card:hover {
+        transform: translateY(-12px); /* Even more pronounced lift */
+        box-shadow: 0 25px 55px rgba(0, 0, 0, 0.25); /* Stronger shadow on hover */
+    }
+    .category-card img {
+        width: 100%;
+        height: 250px; /* Taller images */
+        object-fit: cover;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .category-card h3 {
+        margin: 30px 0 18px; /* More margin */
+        font-size: 2rem; /* Larger heading */
+        color: #7a5e5e;
+        font-family: 'Playfair Display', serif;
+    }
+    .category-card p {
+        margin: 0 30px 30px; /* More padding for text */
+        color: #6b6b6b;
+        font-size: 1.15rem; /* Slightly larger paragraph */
+        line-height: 1.6;
+        flex-grow: 1; /* Allows paragraph to take available space */
+    }
+
+    /* Call to Action Section */
+    .cta-section {
+        background-color: #a38b7e; /* Matching earthy button color */
+        color: white;
+        padding: 70px 50px; /* More generous padding */
+        border-radius: 20px; /* More rounded */
+        margin-bottom: 70px; /* More space below CTA */
+        box-shadow: 0 15px 40px rgba(163, 139, 126, 0.5); /* Stronger shadow */
+    }
+    .cta-section h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem; /* Larger heading */
+        margin-bottom: 25px;
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* Stronger shadow */
+    }
+    .cta-section p {
+        font-size: 1.5rem; /* Larger paragraph */
+        max-width: 850px; /* Wider text block */
+        margin: 0 auto 50px; /* More space before button */
+        opacity: 0.95;
+        line-height: 1.5;
+    }
+    .cta-button {
+        display: inline-block;
+        background-color: #7a5e5e; /* Darker, contrasting button */
+        color: white;
+        padding: 20px 45px; /* More padding */
+        font-size: 1.3rem; /* Larger font */
+        font-weight: 700;
+        border-radius: 35px; /* More rounded */
+        text-decoration: none;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .cta-button:hover {
+        background-color: #5c4141;
+        transform: translateY(-4px); /* More pronounced lift */
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5); /* Stronger hover shadow */
+    }
+
+    /* Keyframe Animations */
+    @keyframes fadeInOverlay {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes fadeInScale {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+
+    /* ----------------------------------------------------------- */
+    /* Media Queries for Responsiveness (Home Page Specific) */
+    /* ----------------------------------------------------------- */
+
+    /* Small devices (phones, 600px and down) */
+    @media (max-width: 600px) {
+        .container {
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .hero-section {
+            padding: 50px 20px;
+            margin-bottom: 40px;
+            border-radius: 15px;
+            min-height: 350px; /* Adjusted min-height for mobile */
+        }
+        .hero-overlay h1 {
+            font-size: 2.8rem; /* Smaller for mobile */
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        .hero-overlay p {
+            font-size: 1.1rem; /* Smaller for mobile */
+            margin-bottom: 30px;
+        }
+        .hero-button {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+        }
+
+        .section-title {
+            font-size: 2.2rem; /* Smaller for mobile */
+            margin-bottom: 35px;
+        }
+
+        .product-categories-grid {
+            grid-template-columns: 1fr; /* Single column on mobile */
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .category-card {
+            max-width: 320px; /* Constrain width of single cards for better appearance */
+            margin: 0 auto; /* Center individual cards */
+            border-radius: 15px;
+        }
+        .category-card img {
+            height: 180px; /* Adjusted image height for mobile */
+        }
+        .category-card h3 {
+            font-size: 1.6rem;
+            margin: 20px 0 10px;
+        }
+        .category-card p {
+            font-size: 1rem;
+            margin: 0 20px 20px;
+        }
+
+        .cta-section {
+            padding: 40px 20px;
+            margin-bottom: 40px;
+            border-radius: 15px;
+        }
+        .cta-section h2 {
+            font-size: 2.2rem; /* Smaller for mobile */
+            margin-bottom: 15px;
+        }
+        .cta-section p {
+            font-size: 1.05rem; /* Smaller for mobile */
+            margin: 0 auto 30px;
+        }
+        .cta-button {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+        }
+    }
+
+    /* Medium devices (tablets, 601px to 992px) */
+    @media (min-width: 601px) and (max-width: 992px) {
+        .container {
+            padding: 0 20px;
+        }
+
+        .hero-section {
+            padding: 70px 40px;
+            min-height: 400px;
+        }
+        .hero-overlay h1 {
+            font-size: 4rem;
+        }
+        .hero-overlay p {
+            font-size: 1.5rem;
+        }
+        .hero-button {
+            padding: 20px 45px;
+            font-size: 1.4rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            margin-bottom: 50px;
+        }
+
+        .product-categories-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjust minmax for tablets */
+            gap: 40px;
+        }
+        .category-card img {
+            height: 220px;
+        }
+        .category-card h3 {
+            font-size: 1.8rem;
+        }
+        .category-card p {
+            font-size: 1.1rem;
+        }
+
+        .cta-section {
+            padding: 60px 40px;
+        }
+        .cta-section h2 {
+            font-size: 3rem;
+        }
+        .cta-section p {
+            font-size: 1.25rem;
+        }
+        .cta-button {
+            padding: 18px 40px;
+            font-size: 1.2rem;
+        }
+    }
+</style>
+
+<div class="container">
+    <section class="hero-section">
+        <div class="hero-overlay">
+            <h3>Unlock Your Creativity with Cozy Creations!</h3>
+            <p>Personalize unique puzzles, keychains, and photo booths with your cherished memories. Every piece crafted with warmth and care.</p>
+            <a href="/customize/" class="hero-button">Start Creating Now!</a>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">Explore Our Cozy Creations</h2>
+        <div class="product-categories-grid">
+            <a href="/customize/puzzle/" class="category-card">
+                <img src="https://scontent.fpnh11-1.fna.fbcdn.net/v/t39.30808-6/476009857_122103644906754824_6186214591235934573_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeE5NNIp10kKJhVGkkT9A7yZCJZLvEmkpFwIlku8SaSkXGWSwoeIzH7RQbD563mebf_zjTR571ajbU3WAELgKdxA&_nc_ohc=zBE-ESB3bAQQ7kNvwG_6641&_nc_oc=AdnJBICRQuAC56dlCBja3JlhgozR8cEKVYyOv38eg-doz5IW_ypTnSuEKbl07efYNwA&_nc_zt=23&_nc_ht=scontent.fpnh11-1.fna&_nc_gid=peC_Lh0Ywi-mx91d-EgeNg&oh=00_AfS8_ZA6FyyrPDfGOky2KNf_HYppy6Noy_qYIwEH9ENpWA&oe=68852A39" alt="Custom Puzzles" />
+                <h3>Puzzles 🧩</h3>
+                <p>Assemble your favorite moments, piece by piece, with custom-made puzzles.</p>
+            </a>
+            <a href="/customize/keychain/" class="category-card">
+                <img src="https://i.pinimg.com/736x/b1/dd/0f/b1dd0f6c766541be590671a2254424df.jpg" alt="Personalized Keychains" />
+                <h3>Keychains 🔑</h3>
+                <p>Carry your cherished memories everywhere with personalized keychains.</p>
+            </a>
+            <a href="/customize/photobooth/" class="category-card">
+                <img src="https://i.pinimg.com/736x/6e/77/cc/6e77cced7031e6e2c58d555d84f751b6.jpg" alt="Fun Photo Booths" />
+                <h3>Photo Booths 📸</h3>
+                <p>Capture candid joy and laughter with our customizable photo booth experiences.</p>
+            </a>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>Ready to Make Something Special?</h2>
+        <p>Dive into our customization tools and bring your unique ideas to life. It's easy, fun, and truly personal.</p>
+        <a href="/customize/" class="cta-button">Design Your Own Today</a>
+    </section>
+</div>
+{% endblock %}

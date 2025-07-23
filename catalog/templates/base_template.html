@@ -1,0 +1,873 @@
+{% load static %} {# This line loads the staticfiles tags for use in this template #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Cozy Creations{% endblock %}</title>
+    <!-- Google Fonts for a warmer feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Link to your static styles.css - Assuming this is empty or contains non-conflicting styles -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* Reset & Global */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif; /* Softer, modern sans-serif */
+            background: #fdfaf6 url('https://www.transparenttextures.com/patterns/white-wall-3.png'); /* soft texture */
+            color: #4a4a4a; /* Softer dark grey */
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            /* padding-top will be set by JavaScript for dynamic header height */
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(to right, #8b6e5d, #7a5e5e); /* Gradient background */
+            color: white;
+            padding: 20px 40px; /* Slightly more padding */
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Subtle shadow */
+            flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+            position: fixed; /* Changed from sticky to fixed */
+            top: 0;
+            left: 0;
+            z-index: 1000; /* Ensure it stays on top */
+        }
+        header h1 {
+            margin: 0;
+            font-family: 'Playfair Display', serif; /* Elegant serif for heading */
+            font-weight: 700;
+            font-size: 2.3rem; /* Slightly larger */
+            letter-spacing: 1.5px; /* More spacing for elegance */
+            color: #fff; /* Ensure color is white for gradient */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Menu Toggle Button (Hamburger) */
+        .menu-toggle {
+            display: none; /* Hidden by default on desktop */
+            background: none;
+            border: none;
+            font-size: 1.8rem; /* Size of the hamburger icon */
+            color: white;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.3s ease;
+        }
+        .menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        nav {
+            width: auto; /* Default for desktop */
+            transition: max-height 0.3s ease-out; /* Smooth transition for mobile menu */
+        }
+        nav ul {
+            list-style: none;
+            margin: 0; padding: 0;
+            display: flex;
+            gap: 30px; /* Slightly more gap */
+        }
+        nav ul li {
+            position: relative; /* For dropdown */
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease, transform 0.2s ease, background-color 0.3s ease; /* Add background transition */
+            display: flex; /* Use flexbox for icon and text alignment */
+            align-items: center; /* Vertically center icon and text */
+            padding: 10px 15px; /* Add padding for better hover area */
+            border-radius: 8px; /* Rounded corners for nav items */
+        }
+        nav ul li a i {
+            margin-right: 8px; /* Space between icon and text */
+            font-size: 1.1em; /* Adjust icon size relative to text */
+        }
+        nav ul li a:hover {
+            color: #fcebd7; /* Lighter, warm hover color */
+            background-color: rgba(255, 255, 255, 0.1); /* Subtle background on hover */
+            transform: translateY(-2px); /* Subtle lift on hover */
+        }
+
+        /* Dropdown Menu for Customize */
+        .dropdown-menu {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 100%; /* Position below the parent link */
+            left: 0;
+            background-color: #7a5e5e; /* Same as header background */
+            min-width: 180px; /* Minimum width for dropdown */
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1001; /* Ensure it's above other content */
+            border-radius: 8px;
+            overflow: hidden; /* For rounded corners on items */
+            padding: 10px 0; /* Vertical padding for dropdown items */
+            animation: fadeInDropdown 0.3s ease-out; /* Fade in animation */
+        }
+
+        .dropdown-menu li a {
+            color: white;
+            padding: 12px 20px; /* Padding for dropdown items */
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-weight: 500; /* Slightly lighter font for sub-items */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .dropdown-menu li a:hover {
+            background-color: #8c7365; /* Darker hover for dropdown items */
+            color: #fcebd7;
+            transform: none; /* No lift for dropdown items */
+        }
+
+        /* Show dropdown on hover (desktop) */
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* Main content area styling */
+        main {
+            flex-grow: 1; /* Allows main content to take available space */
+            width: 100%; /* Ensure main takes full width */
+            padding: 20px 0; /* Add some vertical padding */
+        }
+
+        .container {
+            max-width: 1100px; /* Wider for main page content */
+            margin: 40px auto; /* More vertical margin */
+            padding: 0 25px;
+            text-align: center;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin: 40px auto;
+            max-width: 600px;
+            background: white;
+            flex-wrap: wrap; /* Allow search input and button to wrap */
+        }
+        .search-bar input {
+            padding: 14px 20px;
+            font-size: 1rem;
+            flex: 1;
+            border: none;
+            outline: none;
+            background: #fff;
+            min-width: 150px; /* Ensure input doesn't shrink too much */
+        }
+        .search-bar button {
+            padding: 14px 30px;
+            background: #a38b7e;
+            color: white;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+        .search-bar button:hover {
+            background: #8c7365;
+        }
+
+        /* Slide banner */
+        .slide-banner {
+            position: relative;
+            width: 100%;
+            height: 400px; /* Taller banner */
+            border-radius: 20px; /* More rounded corners */
+            overflow: hidden;
+            margin-bottom: 60px; /* More spacing */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Deeper shadow */
+            background: url('https://images.unsplash.com/photo-1541701494587-5757d079313a?auto=format&fit=crop&w=1400&q=80') no-repeat center/cover;
+            display: flex; /* Use flex for centering overlay content */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .slide-banner .overlay {
+            background: rgba(122, 94, 94, 0.6); /* Semi-transparent warm overlay */
+            color: white;
+            padding: 40px; /* More padding for text */
+            font-size: 2.2rem; /* Larger font */
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            animation: fadeIn 2s ease;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3); /* Stronger text shadow */
+            max-width: 90%; /* Prevent text overflow */
+        }
+        /* Product categories */
+        .product-categories {
+            display: grid; /* Use CSS Grid for better control */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+            gap: 30px; /* More gap */
+            justify-content: center; /* Center items in grid */
+            margin-top: 30px;
+        }
+
+        .category-card {
+            background: #fff; /* Clean white background */
+            border-radius: 14px; /* Nicer rounded corners */
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1); /* Deeper shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Slower transition */
+            transform: scale(1); /* Ensure initial scale is 1 */
+            border: 1px solid #eee; /* Subtle border */
+            text-decoration: none; /* Ensure link styling is removed */
+            color: #4a4a4a; /* Default text color */
+            display: flex; /* Make card content flex */
+            flex-direction: column;
+        }
+        .category-card:hover {
+            transform: scale(1.03); /* More pronounced lift */
+            box-shadow: 0 12px 28px rgba(0,0,0,0.15); /* Stronger shadow on hover */
+        }
+        .category-card img {
+            width: 100%;
+            height: 180px; /* Taller images */
+            object-fit: cover;
+            border-bottom: 1px solid #f0f0f0; /* Separator for image */
+        }
+        .category-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem; /* Larger heading */
+            color: #7a5e5e; /* Matches header color */
+            margin: 20px 0 10px;
+        }
+        .category-card p {
+            padding: 0 20px 20px;
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.5;
+            flex-grow: 1; /* Allow description to take space */
+        }
+
+        /* Customize button */
+        .customize-btn {
+            display: block;
+            margin: 60px auto; /* More margin */
+            background: #a38b7e; /* Matches search button */
+            padding: 18px 50px; /* More padding */
+            font-size: 1.3rem; /* Larger font */
+            border-radius: 50px; /* More rounded */
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 25px rgba(163, 139, 126, 0.4); /* Shadow matches button color */
+            text-align: center;
+            width: max-content; /* Adjust width to content */
+            max-width: 90%; /* Ensure it doesn't overflow on small screens */
+        }
+        .customize-btn:hover {
+            background: #8c7365;
+            transform: translateY(-3px); /* Stronger lift */
+            box-shadow: 0 15px 35px rgba(163, 139, 126, 0.6); /* Stronger shadow on hover */
+        }
+
+        footer {
+            margin-top: 80px;
+            text-align: center;
+            padding: 25px;
+            font-size: 0.95rem;
+            background: #f5f0eb;
+            color: #888;
+            border-top: 1px solid #e2dcd5;
+            width: 100%; /* Ensure footer spans full width */
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeInDropdown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ----------------------------------------------------------- */
+        /* Media Queries for Responsiveness */
+        /* ----------------------------------------------------------- */
+
+        /* Small devices (phones, 600px and down) */
+        @media (max-width: 600px) {
+            body {
+                /* padding-top will be dynamically set by JS */
+            }
+            header {
+                flex-direction: row; /* Keep logo and toggle on one row */
+                justify-content: space-between; /* Space them out */
+                align-items: center;
+                padding: 15px 20px; /* Adjust padding for mobile header */
+            }
+            header h1 {
+                font-size: 1.6rem;
+                margin-bottom: 0; /* Remove bottom margin when on same row as toggle */
+            }
+            .menu-toggle {
+                display: block; /* Show hamburger icon on mobile */
+            }
+            nav {
+                max-height: 0; /* Hide nav by default */
+                overflow: hidden; /* Hide overflow content */
+                width: 100%; /* Take full width below header content */
+                flex-basis: 100%; /* Force nav to new line */
+                order: 3; /* Place nav below logo and toggle */
+            }
+            nav.nav-open {
+                max-height: 300px; /* Max height to reveal menu (adjust as needed for dropdown) */
+                overflow: visible; /* Make content visible */
+            }
+            nav ul {
+                flex-direction: column; /* Stack nav items vertically */
+                gap: 8px; /* Reduce gap for stacked items */
+                margin-top: 15px; /* Add space above menu items */
+                width: 100%; /* Make nav items take full width */
+                background-color: rgba(122, 94, 94, 0.9); /* Slightly darker background for menu */
+                padding: 10px 0; /* Padding for the menu itself */
+                border-radius: 8px;
+            }
+            nav ul li {
+                width: 100%;
+            }
+            nav ul li a {
+                padding: 10px 0; /* Increased vertical padding for clickable area */
+                display: flex; /* Use flex for icon and text alignment */
+                justify-content: center; /* Center content within the link */
+                background-color: transparent; /* No background on individual links */
+                border-radius: 0; /* No border-radius on individual links */
+            }
+            /* Mobile dropdown */
+            .dropdown .dropdown-menu {
+                position: static; /* Remove absolute positioning for mobile */
+                display: none; /* Hidden by default */
+                width: 100%; /* Take full width */
+                box-shadow: none; /* No shadow */
+                padding: 0;
+                background-color: rgba(100, 70, 70, 0.8); /* Slightly different background for sub-menu */
+                border-radius: 0;
+            }
+            .dropdown.active .dropdown-menu {
+                display: block; /* Show on active */
+            }
+            .dropdown-menu li a {
+                padding: 8px 0 8px 30px; /* Indent sub-items */
+                justify-content: flex-start; /* Align to start */
+                font-size: 0.95rem;
+            }
+
+            .container {
+                margin: 20px auto;
+                padding: 0 15px;
+            }
+
+            .search-bar {
+                flex-direction: column; /* Stack search input and button */
+                max-width: 100%;
+                margin: 20px auto;
+                border-radius: 12px; /* Re-apply border radius for whole component */
+                overflow: hidden; /* Ensure rounded corners for nested elements */
+            }
+            .search-bar input {
+                border-radius: 12px 12px 0 0; /* Rounded top corners */
+                width: 100%;
+                padding: 12px 15px;
+                font-size: 0.95rem;
+            }
+            .search-bar button {
+                border-radius: 0 0 12px 12px; /* Rounded bottom corners */
+                width: 100%;
+                padding: 12px 15px;
+                font-size: 1rem;
+            }
+
+            .slide-banner {
+                height: 200px; /* Shorter banner for phones */
+                margin-bottom: 30px;
+                border-radius: 10px; /* Smaller border radius */
+            }
+            .slide-banner .overlay {
+                font-size: 1.3rem; /* Smaller font for overlay text */
+                padding: 20px;
+                max-width: 95%;
+            }
+
+            .product-categories {
+                grid-template-columns: 1fr; /* Single column for categories */
+                gap: 20px;
+            }
+            .category-card {
+                margin: 0 auto; /* Center individual cards */
+                max-width: 320px; /* Limit width of single column cards */
+            }
+            .category-card h3 {
+                font-size: 1.3rem;
+            }
+            .category-card p {
+                font-size: 0.9rem;
+            }
+
+            .customize-btn {
+                padding: 15px 30px;
+                font-size: 1.1rem;
+                margin: 40px auto;
+                width: 90%; /* Take more width on small screens */
+            }
+            footer {
+                margin-top: 40px;
+                padding: 15px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Medium devices (tablets, 601px to 992px) */
+        @media (min-width: 601px) and (max-width: 992px) {
+            body {
+                padding-top: 80px; /* Ensure consistent padding for tablets */
+            }
+            header {
+                padding: 20px 30px;
+            }
+            header h1 {
+                font-size: 2rem;
+            }
+            nav ul {
+                gap: 20px;
+            }
+            .container {
+                padding: 0 20px;
+            }
+            .search-bar {
+                max-width: 500px; /* Slightly narrower */
+            }
+            .slide-banner {
+                height: 300px;
+            }
+            .slide-banner .overlay {
+                font-size: 1.8rem;
+                padding: 30px;
+            }
+            .product-categories {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Allow 2 or 3 columns */
+                gap: 25px;
+            }
+            .customize-btn {
+                padding: 16px 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Styles specific to customize pages for forms and previews (kept for other templates) */
+        form {
+            background: white;
+            max-width: 850px; /* Adjusted for wider form */
+            margin: 30px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid #eee;
+            display: flex;
+            flex-wrap: wrap; /* Allow form groups to wrap */
+            justify-content: space-between; /* Space out elements */
+        }
+        .form-group {
+            width: calc(50% - 15px); /* Two columns layout */
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        /* Override for form groups on smaller screens, keeping consistent with general mobile styles */
+        @media (max-width: 768px) {
+            form {
+                padding: 20px; /* Reduce form padding */
+                margin: 20px auto;
+                max-width: 95%; /* Allow forms to take more width */
+            }
+            .form-group {
+                width: 100%; /* Single column on smaller screens */
+                margin-bottom: 20px;
+            }
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 12px;
+            color: #6a6a6a;
+            font-size: 1.1rem;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        input[type="text"], input[type="number"], select, textarea, input[type="color"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            color: #4a4a4a;
+        }
+        input[type="color"] {
+            height: 40px; /* Make color input larger */
+            padding: 5px; /* Adjust padding for color swatch */
+        }
+        select {
+            appearance: none; /* Remove default arrow */
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22292.4%22 height%3D%22292.4%22 viewBox%3D%220 0 292.4 292.4%22%3E%3Cpath fill%3D%22%237a5e5e%22 d%3D%22M287 114.3L146.2 255.1 5.4 114.3h281.6z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 12px auto;
+        }
+
+        .customize-heading { /* Renamed for clarity on specific pages */
+            font-family: 'Playfair Display', serif;
+            color: #7a5e5e;
+            font-size: 3rem; /* Larger heading */
+            margin-bottom: 40px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.08);
+        }
+        @media (max-width: 768px) {
+            .customize-heading {
+                font-size: 2rem; /* Smaller on mobile */
+                margin-bottom: 25px;
+            }
+        }
+
+        .preview-section-title { /* Renamed for clarity on specific pages */
+            width: 100%; /* Take full width */
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            color: #7a5e5e;
+            font-size: 2.2rem;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+        @media (max-width: 768px) {
+            .preview-section-title {
+                font-size: 1.8rem; /* Smaller on mobile */
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+        }
+
+
+        .photo-booth-preview-area {
+            width: 100%;
+            background-color: var(--backdrop-color, #fdfaf6); /* Dynamic backdrop color */
+            border: 5px solid #a38b7e; /* Main booth border */
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.1), 0 8px 25px rgba(0,0,0,0.15); /* Inner and outer shadow */
+            position: relative; /* For text positioning */
+            min-height: 400px; /* Ensure it's tall enough */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Push title/images to ends */
+            align-items: center;
+        }
+        @media (max-width: 768px) {
+            .photo-booth-preview-area {
+                padding: 20px; /* Reduce padding on mobile */
+                min-height: 300px; /* Adjust min-height */
+            }
+        }
+
+
+        #preview-theme-text {
+            font-family: 'Playfair Display', serif; /* Default, overridden by JS */
+            font-size: 2.5rem;
+            color: #7a5e5e;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.7); /* Slightly transparent background */
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            white-space: pre-wrap; /* Preserve formatting for new lines */
+            word-break: break-word; /* Prevent overflow */
+            flex-shrink: 0; /* Prevent text from shrinking */
+        }
+        @media (max-width: 768px) {
+            #preview-theme-text {
+                font-size: 1.5rem; /* Smaller text on mobile */
+                padding: 8px 15px;
+                margin-bottom: 15px;
+            }
+        }
+
+
+        .photo-booth-image-grid {
+            display: grid;
+            gap: 25px;
+            width: 100%;
+            flex-grow: 1; /* Allow grid to expand */
+            align-items: center; /* Vertically align items in grid */
+            justify-items: center; /* Horizontally align items in grid */
+            padding: 20px 0; /* Padding above/below images */
+            /* Default: 2x2 grid for 4 images */
+            grid-template-columns: repeat(2, 1fr);
+            grid-auto-rows: 1fr; /* Ensure rows take equal height */
+        }
+        @media (max-width: 768px) {
+            .photo-booth-image-grid {
+                gap: 15px; /* Smaller gap on mobile */
+                padding: 15px 0;
+            }
+        }
+
+        /* Layout Specific Styles */
+        /* These layouts need explicit mobile considerations if they are complex */
+        .layout-2x2 .photo-frame {
+            /* Default 2x2 is already set */
+        }
+        .layout-1x4 {
+            grid-template-columns: 1fr; /* Single column */
+            grid-auto-rows: auto; /* Auto height for rows */
+            max-width: 200px; /* Constrain width for a strip */
+            margin: 0 auto; /* Center the strip */
+        }
+        .layout-1x4 .photo-frame {
+            padding-bottom: 150%; /* Taller rectangular frame for strip */
+        }
+        .layout-1big-2small {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            align-items: start; /* Align frames to top of grid cells */
+            justify-items: center;
+        }
+        .layout-1big-2small #frame1 {
+            grid-column: 1 / 3; /* Span across both columns */
+            padding-bottom: 60%; /* Wider rectangle for the main image */
+            width: 90%; /* Adjust width for the big frame */
+            margin-bottom: 10px; /* Space below big frame */
+        }
+        .layout-1big-2small #frame2,
+        .layout-1big-2small #frame3 {
+            width: 100%; /* Fill their grid cells */
+            padding-bottom: 100%; /* Square for small images */
+        }
+        /* Hide frame4 for specific layouts */
+        .layout-1x3 #frame4,
+        .layout-1big-2small #frame4 {
+            display: none !important;
+        }
+        @media (max-width: 768px) {
+            .layout-1big-2small #frame1 {
+                padding-bottom: 75%; /* Adjust aspect ratio for better mobile fit */
+            }
+            .layout-1x4 {
+                max-width: 150px; /* Even narrower for smaller phones */
+            }
+        }
+
+
+        /* General Photo Frame Styling (used by Photo Booth, could be for Puzzle/Keychain preview too) */
+        .photo-frame {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%; /* Default 1:1 Aspect Ratio */
+            border: 4px solid #f0e6d6; /* Lighter frame border */
+            border-radius: 12px;
+            background-color: #ffffff; /* White background for photo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15); /* Stronger shadow for pop */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .photo-frame:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        }
+
+        .photo-frame img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cover the frame area */
+            display: none; /* Hidden by default */
+        }
+
+        .photo-frame .placeholder-text {
+            color: #c0b0a0; /* Lighter placeholder */
+            font-size: 1.1em;
+            font-weight: 500;
+            text-align: center;
+            padding: 10px;
+        }
+        @media (max-width: 768px) {
+            .photo-frame {
+                border-width: 3px; /* Slightly thinner border */
+                border-radius: 10px;
+            }
+            .photo-frame .placeholder-text {
+                font-size: 0.9em; /* Smaller placeholder text */
+            }
+        }
+
+
+        button[type="submit"] { /* General submit button style */
+            background-color: #a38b7e; /* Earthy button color */
+            color: white;
+            padding: 18px 30px; /* Even more padding */
+            font-size: 1.3rem; /* Larger font */
+            border: none;
+            border-radius: 12px; /* Softer corners */
+            cursor: pointer;
+            width: 100%;
+            max-width: 400px; /* Limit button width */
+            font-weight: 700;
+            margin-top: 40px;
+            box-shadow: 0 8px 20px rgba(163, 139, 126, 0.5); /* Stronger shadow */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: #8c7365; /* Darker hover */
+            transform: translateY(-3px); /* More pronounced lift */
+            box-shadow: 0 12px 30px rgba(163, 139, 126, 0.7); /* Even stronger shadow on hover */
+        }
+        @media (max-width: 768px) {
+            button[type="submit"] {
+                padding: 15px 25px; /* Reduce padding on mobile */
+                font-size: 1.1rem; /* Smaller font */
+                max-width: 90%; /* Take more width */
+                margin-top: 30px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<header id="main-header">
+    <h1>RMB Creations ✨</h1>
+    <button class="menu-toggle" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+    </button>
+    <nav id="main-nav">
+        <ul>
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle"><i class="fas fa-palette"></i> Customize <i class="fas fa-chevron-down dropdown-icon"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/customize/puzzle/"><i class="fas fa-puzzle-piece"></i> Puzzle</a></li>
+                    <li><a href="/customize/keychain/"><i class="fas fa-key"></i> Keychain</a></li>
+                    <li><a href="/customize/photobooth/"><i class="fas fa-camera"></i> Photo Booth</a></li>
+                </ul>
+            </li>
+            <li><a href="/contact/"><i class="fas fa-envelope"></i> Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    {% block content %}
+    {# This block will be filled by extending templates like home.html #}
+    {% endblock %}
+</main>
+
+<footer>
+    &copy; {{ now|date:"Y" }} Cozy Creations. All rights reserved. Made with love and imagination.
+</footer>
+
+<script>
+    // JavaScript to dynamically set body padding-top based on header height
+    function setBodyPadding() {
+        const header = document.getElementById('main-header');
+        if (header) {
+            document.body.style.paddingTop = header.offsetHeight + 'px';
+        }
+    }
+
+    // Toggle logic for the mobile menu
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    const dropdownParent = document.querySelector('.dropdown');
+
+    menuToggle.addEventListener('click', () => {
+        mainNav.classList.toggle('nav-open');
+        // If the main nav is closed, ensure dropdown is also closed
+        if (!mainNav.classList.contains('nav-open')) {
+            dropdownParent.classList.remove('active');
+        }
+        setBodyPadding();
+    });
+
+    // Toggle logic for the Customize dropdown on mobile
+    dropdownToggle.addEventListener('click', (e) => {
+        // Prevent default link behavior only if it's a mobile dropdown toggle
+        if (window.innerWidth <= 600) { // Apply only on mobile breakpoints
+            e.preventDefault();
+            dropdownParent.classList.toggle('active');
+            // Recalculate padding after toggling dropdown, as nav height might change
+            setBodyPadding();
+        }
+    });
+
+    // Close dropdown if clicking outside on mobile
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 600) {
+            if (!mainNav.contains(e.target) && !menuToggle.contains(e.target)) {
+                mainNav.classList.remove('nav-open');
+                dropdownParent.classList.remove('active');
+                setBodyPadding();
+            }
+        }
+    });
+
+    // Prevent dropdown from showing on hover on mobile (CSS handles this for desktop)
+    // This is more of a safeguard, as CSS `display: none` on mobile for dropdown-menu handles it.
+    // However, the `dropdown:hover .dropdown-menu` still applies.
+    // We need to ensure that on mobile, the dropdown is only shown via JS toggle.
+    // The CSS already sets `display: none` for `.dropdown-menu` on mobile and uses `dropdown.active .dropdown-menu`
+    // to show it, overriding the hover effect.
+
+    // Set padding on load and resize
+    window.addEventListener('load', setBodyPadding);
+    window.addEventListener('resize', () => {
+        setBodyPadding();
+        // Reset dropdown state on resize if switching between desktop/mobile
+        if (window.innerWidth > 600) {
+            mainNav.classList.remove('nav-open');
+            dropdownParent.classList.remove('active');
+        }
+    });
+</script>
+
+</body>
+</html>

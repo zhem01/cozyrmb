@@ -1,0 +1,466 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}Cozy Creations - Customize Keychain{% endblock %}
+
+{% block content %}
+<style>
+    /* CSS Variables for easier theme management */
+    :root {
+        --primary-brown: #A38B7E;
+        --dark-brown: #5C4033;
+        --light-brown: #F1E9E4;
+        --text-color-dark: #6B4F4F;
+        --text-color-light: #7A5E5E;
+        --border-color: #DED7D3;
+        --background-light: #FDFBF8;
+        --background-paper: #FFFFFF;
+        --shadow-light: rgba(0, 0, 0, 0.05);
+        --shadow-medium: rgba(0, 0, 0, 0.12);
+        --shadow-accent: rgba(163, 139, 126, 0.4);
+        --radius-small: 0.5rem; /* 8px */
+        --radius-medium: 0.75rem; /* 12px */
+        --radius-large: 1.25rem; /* 20px */
+        --spacing-unit: 1rem; /* 16px */
+    }
+
+    /* General Container and Form Styling */
+    .container {
+        flex-grow: 1;
+        max-width: 45rem; /* 720px */
+        margin: 3.125rem auto; /* 50px */
+        padding: 0 1.5625rem; /* 25px */
+        text-align: center;
+    }
+
+    .container h1 {
+        font-family: 'Playfair Display', serif;
+        color: var(--text-color-dark);
+        font-size: 3rem;
+        margin-bottom: 2.8125rem; /* 45px */
+        letter-spacing: 0.03125rem; /* 0.5px */
+    }
+
+    form {
+        background: var(--background-paper);
+        max-width: 42rem; /* 672px - slightly less than container for visual balance */
+        margin: 1.875rem auto; /* 30px */
+        padding: 2.5rem; /* 40px */
+        border-radius: var(--radius-large);
+        box-shadow: 0 0.9375rem 2.5rem var(--shadow-medium); /* 15px 40px */
+        border: 1px solid var(--background-light);
+    }
+
+    /* Form Group and Label Styling */
+    .form-group {
+        margin-bottom: 1.5625rem; /* 25px */
+        text-align: left;
+    }
+
+    label {
+        font-weight: 700;
+        display: block;
+        margin-bottom: 0.9375rem; /* 15px */
+        color: var(--dark-brown);
+        font-size: 1.15rem;
+    }
+
+    /* Image Input Group Styling */
+    .image-input-group {
+        display: flex; /* Allow input and remove button to be side-by-side */
+        align-items: center;
+        gap: 0.5rem; /* 8px */
+        margin-bottom: 0.625rem; /* 10px */
+    }
+
+    .image-input-group input[type="file"] {
+        flex-grow: 1; /* Allow input to take up available space */
+        margin-bottom: 0; /* Remove default margin */
+    }
+
+    .remove-image-button {
+        background-color: #dc3545; /* Red for remove */
+        color: white;
+        padding: 0.5rem 0.75rem; /* 8px 12px */
+        border: none;
+        border-radius: var(--radius-small);
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: background-color 0.3s ease;
+        display: none; /* Hidden by default for first input */
+    }
+
+    .remove-image-button:hover {
+        background-color: #c82333;
+    }
+
+    .add-image-button {
+        background-color: var(--primary-brown);
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: var(--radius-small);
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 0.5rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .add-image-button:hover {
+        background-color: #8C7365;
+    }
+
+    /* File Input Styling */
+    input[type="file"]::file-selector-button {
+        background-color: var(--primary-brown);
+        color: white;
+        padding: 0.5rem 0.9375rem;
+        border: none;
+        border-radius: var(--radius-small);
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+        background-color: #8C7365;
+    }
+
+    /* Preview Section Styling */
+    h2 {
+        font-family: 'Playfair Display', serif;
+        color: var(--text-color-light);
+        font-size: 2rem;
+        margin-top: 2.5rem; /* 40px */
+        margin-bottom: 1.5625rem; /* 25px */
+    }
+
+    .keychain-preview-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.25rem;
+        margin: 1.875rem 0;
+    }
+
+    .keychain-preview {
+        position: relative;
+        width: 11.25rem; /* 180px */
+        height: 11.25rem; /* 180px */
+        border: 3px dashed #B5A093;
+        border-radius: var(--radius-medium); /* 15px */
+        background-color: var(--background-light);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden; /* Crucial for clip-path to work */
+        box-shadow: 0 0.3125rem 0.9375rem rgba(0,0,0,0.08);
+    }
+
+    .keychain-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* Image will scale down to fit while preserving aspect ratio */
+        display: none; /* Hidden until an image is loaded */
+    }
+
+    .keychain-preview .placeholder-text {
+        color: #C0B0A0;
+        font-size: 1.1em;
+        text-align: center;
+        padding: 0.625rem;
+        font-style: italic;
+    }
+
+    /* CSS Clip Paths for Keychain Shapes */
+    .keychain-preview.rectangle img {
+        clip-path: inset(10% 0 10% 0); /* Example: 10% from top/bottom, 0 from left/right */
+    }
+
+    /* Shape Buttons Styling (remains mostly the same) */
+    .shape-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+
+    .shape-button {
+        border: 2px solid #E0D9D5;
+        border-radius: var(--radius-medium);
+        padding: 0.9375rem 0.625rem;
+        cursor: pointer;
+        background-color: #FFFBF8;
+        transition: all 0.3s ease;
+        flex: 1;
+        min-width: 9rem;
+        max-width: 12rem;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        color: var(--text-color-light);
+        box-sizing: border-box;
+    }
+
+    .shape-button.selected {
+        border-color: var(--primary-brown);
+        background-color: var(--light-brown);
+        color: var(--dark-brown);
+        font-weight: bold;
+        box-shadow: 0 0.3125rem 0.9375rem rgba(163, 139, 126, 0.2);
+        transform: translateY(-0.1875rem);
+    }
+
+    .shape-button:hover {
+        border-color: #B5A093;
+        background-color: #F8F3EF;
+        box-shadow: 0 0.3125rem 0.9375rem var(--shadow-light);
+    }
+
+    .shape-button img {
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        max-height: 3.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Submit Button Styling */
+    button[type="submit"] {
+        background-color: var(--primary-brown);
+        color: white;
+        padding: 1.125rem 1.875rem;
+        font-size: 1.35rem;
+        border: none;
+        border-radius: var(--radius-medium);
+        cursor: pointer;
+        width: 100%;
+        font-weight: 700;
+        margin-top: 2.5rem;
+        box-shadow: 0 0.5rem 1.5625rem var(--shadow-accent);
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #8C7365;
+        transform: translateY(-0.1875rem);
+        box-shadow: 0 0.75rem 1.875rem rgba(163, 139, 126, 0.6);
+    }
+</style>
+
+<div class="container">
+    <h1>Craft Your Custom Keychains! 🔑</h1>
+    <form id="keychain-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Upload Your Image(s):</label>
+            <div id="image-inputs">
+                <div class="image-input-group">
+                    <input type="file" name="images" accept="image/*">
+                    <button type="button" class="remove-image-button" style="display: none;">X</button>
+                </div>
+            </div>
+            <button type="button" class="add-image-button" id="addImageBtn">+ Add More Images</button>
+        </div>
+
+        <div class="form-group">
+            <label>Choose Keychain Shape:</label>
+            <div class="shape-buttons">
+                <div class="shape-button" data-shape="rectangle">
+                    <img src="{% static 'icons/rectangle.png' %}" alt="Rectangle">
+                    <span>Rectangle</span>
+                </div>
+                </div>
+            <input type="hidden" name="shape" id="shape" required>
+        </div>
+
+        <h2>Preview Your Keychains:</h2>
+        <div class="keychain-preview-container" id="preview-container">
+            </div>
+
+        <button type="submit">Order Custom Keychain</button>
+    </form>
+</div>
+
+<script>
+    const shapeInput = document.getElementById('shape');
+    const shapeButtons = document.querySelectorAll('.shape-button');
+    const imageInputsContainer = document.getElementById('image-inputs');
+    const addImageBtn = document.getElementById('addImageBtn');
+    const previewContainer = document.getElementById('preview-container');
+
+    // Function to create a new image input group and its preview
+    function createNewImageInputGroup() {
+        // Create the div for the input group
+        const imageInputGroup = document.createElement('div');
+        imageInputGroup.className = 'image-input-group';
+
+        // Create the file input
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.name = 'images';
+        fileInput.accept = 'image/*';
+        fileInput.required = true; // Make new inputs required
+
+        // Create the remove button
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'remove-image-button';
+        removeButton.textContent = 'X';
+        removeButton.style.display = 'inline-block'; // Show remove button for new inputs
+
+        // Create the preview div for this specific input
+        const previewDiv = document.createElement('div');
+        previewDiv.className = 'keychain-preview';
+        const imgElement = document.createElement('img');
+        const placeholderSpan = document.createElement('span');
+        placeholderSpan.className = 'placeholder-text';
+        placeholderSpan.textContent = 'Upload image here';
+        previewDiv.appendChild(imgElement);
+        previewDiv.appendChild(placeholderSpan);
+        previewContainer.appendChild(previewDiv); // Add to the main preview container
+
+        // Store a reference to the preview div on the input element
+        // so we can easily update it later
+        fileInput.previewElement = previewDiv;
+
+        // Add event listener for file change
+        fileInput.addEventListener('change', () => updatePreview(fileInput));
+
+        // Add event listener for remove button
+        removeButton.addEventListener('click', () => {
+            imageInputsContainer.removeChild(imageInputGroup); // Remove input group
+            previewContainer.removeChild(previewDiv); // Remove its associated preview
+            // If all image inputs are removed, re-add one empty one
+            if (imageInputsContainer.children.length === 0) {
+                // This ensures there's always at least one input available
+                createNewImageInputGroup();
+                // Hide the remove button for the initial input
+                imageInputsContainer.querySelector('.remove-image-button').style.display = 'none';
+                // Remove the extra placeholder preview if one was created
+                if (previewContainer.children.length > 1) {
+                    previewContainer.removeChild(previewContainer.children[1]);
+                }
+            }
+        });
+
+        // Append elements to the group
+        imageInputGroup.appendChild(fileInput);
+        imageInputGroup.appendChild(removeButton);
+
+        // Append the group to the container
+        imageInputsContainer.appendChild(imageInputGroup);
+
+        // Apply the currently selected shape to the new preview (which will always be 'rectangle' now)
+        applyShapeToPreview(previewDiv);
+    }
+
+    // Function to update a specific image preview
+    function updatePreview(inputElement) {
+        const file = inputElement.files[0];
+        const previewDiv = inputElement.previewElement; // Get the associated preview div
+        const imgElement = previewDiv.querySelector('img');
+        const placeholderSpan = previewDiv.querySelector('.placeholder-text');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imgElement.src = e.target.result;
+                imgElement.style.display = 'block';
+                placeholderSpan.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imgElement.src = '';
+            imgElement.style.display = 'none';
+            placeholderSpan.style.display = 'block';
+        }
+    }
+
+    // Function to apply the currently selected shape to a given preview div
+    function applyShapeToPreview(previewDiv) {
+        // Since only 'rectangle' is an option now, we can hardcode or get from shapeInput.value
+        const selectedShape = shapeInput.value || 'rectangle'; // Fallback to 'rectangle' if not set
+        // Remove all existing shape classes (useful if you add more later)
+        previewDiv.classList.remove('rectangle', 'photobooth'); 
+        // Add the new selected shape class
+        if (selectedShape) {
+            previewDiv.classList.add(selectedShape);
+        }
+    }
+
+    // Event listener for "Add More Images" button
+    addImageBtn.addEventListener('click', () => {
+        createNewImageInputGroup();
+    });
+
+    // Event listener for shape buttons
+    shapeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove 'selected' from all (even though there's only one now)
+            shapeButtons.forEach(b => b.classList.remove('selected'));
+            // Add 'selected' to the clicked (and only) button
+            btn.classList.add('selected');
+            shapeInput.value = btn.dataset.shape; // Update hidden input
+
+            // Update ALL existing previews with the new shape (which will always be 'rectangle')
+            document.querySelectorAll('.keychain-preview').forEach(preview => {
+                applyShapeToPreview(preview);
+            });
+        });
+    });
+
+    // Initial setup on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        // Set up the first image input group's preview
+        const initialInput = imageInputsContainer.querySelector('input[type="file"]');
+        const initialPreviewDiv = document.createElement('div');
+        initialPreviewDiv.className = 'keychain-preview';
+        const initialImgElement = document.createElement('img');
+        const initialPlaceholderSpan = document.createElement('span');
+        initialPlaceholderSpan.className = 'placeholder-text';
+        initialPlaceholderSpan.textContent = 'Upload image here';
+        initialPreviewDiv.appendChild(initialImgElement);
+        initialPreviewDiv.appendChild(initialPlaceholderSpan);
+        previewContainer.appendChild(initialPreviewDiv);
+        initialInput.previewElement = initialPreviewDiv; // Link input to its preview
+
+        initialInput.addEventListener('change', () => updatePreview(initialInput));
+
+        // Automatically select the 'rectangle' shape button on load
+        const rectangleButton = document.querySelector('.shape-button[data-shape="rectangle"]');
+        if (rectangleButton) {
+            rectangleButton.click(); // Simulate a click to set the shape and apply to initial preview
+        }
+    });
+
+    // Basic client-side form validation
+    document.getElementById('keychain-form').addEventListener('submit', function(event) {
+        const allFileInputs = document.querySelectorAll('#image-inputs input[type="file"]');
+        let hasImage = false;
+        // Check if any file input has a file selected
+        allFileInputs.forEach(input => {
+            if (input.files.length > 0) {
+                hasImage = true;
+            }
+        });
+
+        if (!hasImage) {
+            alert('Please upload at least one image for your custom keychain!');
+            event.preventDefault();
+            return false;
+        }
+        // Since 'shape' is now effectively fixed to 'rectangle' and auto-selected,
+        // this validation might become redundant, but keeping it for robustness.
+        if (!shapeInput.value) {
+            alert('Please select a keychain shape!'); // Should always be 'rectangle'
+            event.preventDefault();
+            return false;
+        }
+        // If all checks pass, the form will submit normally
+    });
+</script>
+{% endblock %}

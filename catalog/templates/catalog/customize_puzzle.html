@@ -1,0 +1,291 @@
+{% extends 'base_template.html' %}
+
+{% block title %}Create Your Custom Puzzle - Cozy Creations{% endblock %}
+
+{% block content %}
+<style>
+    /* Google Fonts for a more refined look */
+    @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Poppins:wght@300;400;600;700&display=swap');
+
+    body {
+        background-color: #f8f0e5; /* A softer, warmer background */
+    }
+
+    .upload-container {
+        max-width: 700px; /* Slightly wider for better visual balance */
+        margin: 50px auto;
+        padding: 40px;
+        background: #ffffff; /* Pure white for a clean, premium feel */
+        border-radius: 20px; /* More rounded corners for softness */
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Stronger, softer shadow */
+        text-align: center;
+        font-family: 'Poppins', sans-serif; /* Modern, clean sans-serif font */
+        position: relative; /* For potential future animations/elements */
+        overflow: hidden; /* Ensures shadows and borders are contained */
+    }
+
+    .upload-container::before {
+        content: '';
+        position: absolute;
+        top: -30px;
+        left: -30px;
+        right: -30px;
+        bottom: -30px;
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+        pointer-events: none;
+        z-index: 0;
+        animation: subtlePulse 5s infinite alternate ease-in-out;
+    }
+
+    @keyframes subtlePulse {
+        from { transform: scale(1); opacity: 0.8; }
+        to { transform: scale(1.02); opacity: 1; }
+    }
+
+    .upload-container h1 {
+        font-family: 'Merriweather', serif; /* Elegant serif font for headings */
+        color: #5a4b45; /* Deeper, richer brown */
+        margin-bottom: 15px;
+        font-size: 2.5rem; /* Larger heading */
+        letter-spacing: -0.5px; /* Slight letter spacing adjustment */
+        position: relative;
+        z-index: 1;
+    }
+
+    .upload-container p {
+        color: #7d6e66; /* Slightly lighter brown for body text */
+        font-size: 1.1rem; /* Slightly larger text for readability */
+        margin-bottom: 30px;
+        line-height: 1.6;
+        position: relative;
+        z-index: 1;
+    }
+
+    .drop-zone {
+        position: relative;
+        background: #fdfaf7; /* Very light, warm background */
+        border: 2px dashed #cfa78d; /* Richer dashed border */
+        border-radius: 15px; /* Slightly more rounded */
+        padding: 60px 30px; /* More padding for a spacious feel */
+        cursor: pointer;
+        transition: all 0.4s ease-in-out; /* Smoother transitions */
+        display: flex; /* Use flexbox for better icon/text alignment */
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 220px; /* Ensure a good minimum height */
+        z-index: 1;
+    }
+
+    .drop-zone:hover {
+        background-color: #f5ede6; /* Slightly deeper hover effect */
+        border-color: #a38b7e; /* Border darkens on hover */
+        transform: translateY(-3px); /* Subtle lift effect */
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .drop-zone.drag-over {
+        background-color: #e6f7ff; /* Highlight when dragging over */
+        border-color: #5ac4ff;
+    }
+
+    .drop-zone input[type="file"] {
+        display: none;
+    }
+
+    .drop-zone label {
+        display: block; /* Make label a block element for better spacing */
+        font-weight: 600;
+        color: #a38b7e;
+        font-size: 1.2rem; /* Larger label text */
+        margin-top: 15px; /* Space between icon and text */
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .drop-zone-icon {
+        font-size: 3.8rem; /* Larger, more impactful icon */
+        color: #cfa78d;
+        margin-bottom: 10px;
+        animation: bounceIcon 2.5s ease-in-out infinite; /* More dynamic bounce */
+    }
+
+    @keyframes bounceIcon {
+        0%, 100% { transform: translateY(0); }
+        25% { transform: translateY(-8px); }
+        50% { transform: translateY(0); }
+        75% { transform: translateY(-4px); }
+    }
+
+    .drop-zone-text-small {
+        font-size: 0.95rem;
+        color: #92837a;
+        margin-top: 5px;
+    }
+
+    #preview {
+        margin-top: 35px; /* More space above preview */
+        border-radius: 15px;
+        overflow: hidden; /* Ensures image corners are rounded */
+        position: relative;
+        padding: 10px; /* Padding to give a border-like effect */
+        background-color: #fcfcfc; /* Light background for the preview area */
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 150px; /* Ensure preview area has some height even without image */
+        border: 1px solid #eee;
+    }
+
+    #preview img {
+        max-width: 100%;
+        max-height: 300px; /* Constrain image height for consistency */
+        display: block; /* Remove extra space below image */
+        border-radius: 10px;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12); /* Enhanced image shadow */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    #preview img:hover {
+        transform: scale(1.02); /* Slight zoom on hover */
+    }
+
+    #preview p.error {
+        color: #e74c3c; /* Red for error messages */
+        font-weight: 500;
+        padding: 15px;
+        background-color: #ffebeb;
+        border-radius: 8px;
+        border: 1px solid #e74c3c;
+    }
+
+    #continue-btn {
+        margin-top: 35px;
+        padding: 15px 40px; /* Larger button */
+        background: linear-gradient(145deg, #a38b7e, #8c7365); /* Gradient for depth */
+        border: none;
+        color: white;
+        font-weight: 700; /* Bolder text */
+        font-size: 1.25rem; /* Larger font size */
+        border-radius: 10px; /* More pronounced rounded corners */
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 8px 20px rgba(163, 139, 126, 0.3); /* Subtle button shadow */
+        letter-spacing: 0.5px;
+    }
+
+    #continue-btn:hover {
+        background: linear-gradient(145deg, #8c7365, #7a5e5e); /* Darker gradient on hover */
+        transform: translateY(-2px); /* Slight lift */
+        box-shadow: 0 10px 25px rgba(130, 100, 85, 0.4); /* Enhanced shadow on hover */
+    }
+
+    #continue-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+        opacity: 0.8;
+    }
+
+    .info-box {
+        background-color: #f0f8ff; /* Light blue for info */
+        border-left: 5px solid #8ecae6;
+        padding: 15px 20px;
+        margin-top: 25px;
+        border-radius: 8px;
+        text-align: left;
+        color: #3b608c;
+        font-size: 0.95rem;
+    }
+
+    .info-box ul {
+        margin-top: 10px;
+        padding-left: 20px;
+        list-style: disc;
+    }
+
+    .info-box li {
+        margin-bottom: 5px;
+    }
+</style>
+
+<div class="upload-container">
+    <h1>Craft Your Perfect Puzzle 🎨</h1>
+    <p>Bring your favorite memories to life! Upload an image to create a unique custom puzzle.</p>
+
+    <form method="post" enctype="multipart/form-data" id="customize-form">
+        {% csrf_token %}
+        <div class="drop-zone" id="drop-zone">
+            <input type="file" id="image-input" name="image" accept="image/jpeg, image/png, image/webp" required />
+            <div class="drop-zone-icon">🖼️</div> <label for="image-input">Click to browse or Drag & Drop your image here</label>
+            <span class="drop-zone-text-small">Supports JPG, PNG, and WebP formats.</span>
+        </div>
+
+        <div id="preview">
+            <p style="color: #7d6e66;">Your image preview will appear here.</p>
+        </div>
+
+        <div class="info-box">
+            <h4>💡 Tips for the Best Results:</h4>
+            <ul>
+                <li>For optimal quality, we recommend images with a **high resolution**.</li>
+                <li>**A5 size** (approx. 148 x 210 mm or 5.8 x 8.3 inches) in portrait or landscape orientation works best.</li>
+                <li>Avoid blurry or heavily pixelated images.</li>
+            </ul>
+        </div>
+
+        <button type="submit" id="continue-btn" disabled>Next Step: Configure Your Puzzle ✨</button>
+    </form>
+</div>
+
+<script>
+    const input = document.getElementById("image-input");
+    const preview = document.getElementById("preview");
+    const continueBtn = document.getElementById("continue-btn");
+    const dropZone = document.getElementById("drop-zone");
+
+    // Handle file selection via input
+    input.addEventListener("change", function () {
+        handleFiles(this.files);
+    });
+
+    // Handle drag and drop events
+    dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("drag-over");
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("drag-over");
+    });
+
+    dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("drag-over");
+        handleFiles(e.dataTransfer.files);
+    });
+
+    function handleFiles(files) {
+        if (files.length === 0) {
+            preview.innerHTML = `<p style="color: #7d6e66;">Your image preview will appear here.</p>`;
+            continueBtn.disabled = true;
+            return;
+        }
+
+        const file = files[0];
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview Image" />`;
+                continueBtn.disabled = false;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.innerHTML = `<p class="error">Oops! Please select a valid image file (JPG, PNG, or WebP).</p>`;
+            continueBtn.disabled = true;
+        }
+    }
+</script>
+{% endblock %}

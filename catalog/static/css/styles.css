@@ -1,0 +1,442 @@
+/* Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #fdfaf6; /* Warm off-white */
+    color: #4a4a4a; /* Softer dark grey */
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header {
+    background-color: #7a5e5e; /* Warm, earthy tone */
+    color: white;
+    padding: 20px 40px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+header h1 {
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 2.2rem;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+nav ul {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    gap: 25px;
+}
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+nav ul li a:hover {
+    color: #f0e6d6;
+    transform: translateY(-2px);
+}
+
+/* Main content area styling */
+main {
+    flex-grow: 1; /* Allows main content to take available space */
+    width: 100%; /* Ensure main takes full width */
+    padding: 20px 0; /* Add some vertical padding */
+}
+
+.container {
+    max-width: 1100px; /* Wider container for main page */
+    margin: 50px auto;
+    padding: 0 25px;
+    text-align: center;
+}
+
+/* Hero Section */
+.hero-section {
+    background-image: url('https://images.unsplash.com/photo-1517487881594-2787fef5ee4f?auto=format&fit=crop&w=1600&q=80'); /* Warm, inviting background */
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    padding: 80px 40px;
+    margin-bottom: 60px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(122, 94, 94, 0.7); /* Matching warm overlay */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+}
+.hero-overlay h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem; /* Very large and impressive */
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    line-height: 1.1;
+}
+.hero-overlay p {
+    font-size: 1.6rem;
+    max-width: 700px;
+    margin-bottom: 40px;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+.hero-button {
+    display: inline-block;
+    background-color: #f0e6d6; /* Light, contrasting button */
+    color: #7a5e5e; /* Text matches header */
+    padding: 20px 45px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    border-radius: 35px;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(240, 230, 214, 0.4);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+.hero-button:hover {
+    background-color: #e0d0c0;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(240, 230, 214, 0.6);
+}
+
+/* Product Categories Section */
+.section-title {
+    font-family: 'Playfair Display', serif;
+    color: #7a5e5e;
+    font-size: 3rem;
+    margin-bottom: 50px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.08);
+}
+
+.product-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid for 3 items */
+    gap: 40px; /* More space between cards */
+    margin-bottom: 60px;
+}
+.category-card {
+    background: white;
+    border-radius: 15px; /* More rounded */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Deeper shadow */
+    overflow: hidden;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border: 1px solid #eee;
+    text-decoration: none; /* Ensure link styling is removed */
+    color: #4a4a4a; /* Default text color */
+}
+.category-card:hover {
+    transform: translateY(-10px); /* More pronounced lift */
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+.category-card img {
+    width: 100%;
+    height: 220px; /* Taller images */
+    object-fit: cover;
+    border-bottom: 1px solid #f0f0f0;
+}
+.category-card h3 {
+    margin: 25px 0 15px;
+    font-size: 1.8rem; /* Larger heading */
+    color: #7a5e5e;
+    font-family: 'Playfair Display', serif;
+}
+.category-card p {
+    margin: 0 25px 25px; /* More padding for text */
+    color: #6b6b6b;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+/* Call to Action Section */
+.cta-section {
+    background-color: #a38b7e; /* Matching earthy button color */
+    color: white;
+    padding: 60px 40px;
+    border-radius: 15px;
+    margin-bottom: 60px;
+    box-shadow: 0 10px 30px rgba(163, 139, 126, 0.4);
+}
+.cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+.cta-section p {
+    font-size: 1.3rem;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    opacity: 0.9;
+}
+.cta-button {
+    display: inline-block;
+    background-color: #7a5e5e; /* Darker, contrasting button */
+    color: white;
+    padding: 18px 40px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 30px;
+    text-decoration: none;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+.cta-button:hover {
+    background-color: #5c4141;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+footer {
+    text-align: center;
+    margin-top: auto; /* Pushes footer to the bottom */
+    color: #9a9a9a;
+    font-size: 0.95rem;
+    padding: 20px;
+    background-color: #f5f0eb;
+    border-top: 1px solid #eee;
+    width: 100%;
+}
+
+/* Styles specific to customize pages for forms and previews */
+form {
+    background: white;
+    max-width: 850px; /* Adjusted for wider form */
+    margin: 30px auto;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid #eee;
+    display: flex;
+    flex-wrap: wrap; /* Allow form groups to wrap */
+    justify-content: space-between; /* Space out elements */
+}
+.form-group {
+    width: calc(50% - 15px); /* Two columns layout */
+    margin-bottom: 25px;
+    text-align: left;
+}
+@media (max-width: 768px) {
+    .form-group {
+        width: 100%; /* Single column on smaller screens */
+    }
+}
+label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 12px;
+    color: #6a6a6a;
+    font-size: 1.1rem;
+}
+input[type="file"] {
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+input[type="text"], input[type="number"], select, textarea, input[type="color"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: #4a4a4a;
+}
+input[type="color"] {
+    height: 40px; /* Make color input larger */
+    padding: 5px; /* Adjust padding for color swatch */
+}
+select {
+    appearance: none; /* Remove default arrow */
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22292.4%22 height%3D%22292.4%22 viewBox%3D%220 0 292.4 292.4%22%3E%3Cpath fill%3D%22%237a5e5e%22 d%3D%22M287 114.3L146.2 255.1 5.4 114.3h281.6z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 12px auto;
+}
+
+.customize-heading { /* Renamed for clarity on specific pages */
+    font-family: 'Playfair Display', serif;
+    color: #7a5e5e;
+    font-size: 3rem; /* Larger heading */
+    margin-bottom: 40px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.08);
+}
+
+.preview-section-title { /* Renamed for clarity on specific pages */
+    width: 100%; /* Take full width */
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    color: #7a5e5e;
+    font-size: 2.2rem;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}
+
+.photo-booth-preview-area {
+    width: 100%;
+    background-color: var(--backdrop-color, #fdfaf6); /* Dynamic backdrop color */
+    border: 5px solid #a38b7e; /* Main booth border */
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.1), 0 8px 25px rgba(0,0,0,0.15); /* Inner and outer shadow */
+    position: relative; /* For text positioning */
+    min-height: 400px; /* Ensure it's tall enough */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Push title/images to ends */
+    align-items: center;
+}
+
+#preview-theme-text {
+    font-family: 'Playfair Display', serif; /* Default, overridden by JS */
+    font-size: 2.5rem;
+    color: #7a5e5e;
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.7); /* Slightly transparent background */
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    white-space: pre-wrap; /* Preserve formatting for new lines */
+    word-break: break-word; /* Prevent overflow */
+    flex-shrink: 0; /* Prevent text from shrinking */
+}
+
+.photo-booth-image-grid {
+    display: grid;
+    gap: 25px;
+    width: 100%;
+    flex-grow: 1; /* Allow grid to expand */
+    align-items: center; /* Vertically align items in grid */
+    justify-items: center; /* Horizontally align items in grid */
+    padding: 20px 0; /* Padding above/below images */
+    /* Default: 2x2 grid for 4 images */
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr; /* Ensure rows take equal height */
+}
+
+/* Layout Specific Styles */
+.layout-2x2 .photo-frame {
+    /* Default 2x2 is already set */
+}
+.layout-1x4 {
+    grid-template-columns: 1fr; /* Single column */
+    grid-auto-rows: auto; /* Auto height for rows */
+    max-width: 200px; /* Constrain width for a strip */
+    margin: 0 auto; /* Center the strip */
+}
+.layout-1x4 .photo-frame {
+    padding-bottom: 150%; /* Taller rectangular frame for strip */
+}
+.layout-1big-2small {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    align-items: start; /* Align frames to top of grid cells */
+    justify-items: center;
+}
+.layout-1big-2small #frame1 {
+    grid-column: 1 / 3; /* Span across both columns */
+    padding-bottom: 60%; /* Wider rectangle for the main image */
+    width: 90%; /* Adjust width for the big frame */
+    margin-bottom: 10px; /* Space below big frame */
+}
+.layout-1big-2small #frame2,
+.layout-1big-2small #frame3 {
+    width: 100%; /* Fill their grid cells */
+    padding-bottom: 100%; /* Square for small images */
+}
+/* Hide frame4 for specific layouts */
+.layout-1x3 #frame4,
+.layout-1big-2small #frame4 {
+    display: none !important;
+}
+
+/* General Photo Frame Styling (used by Photo Booth, could be for Puzzle/Keychain preview too) */
+.photo-frame {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* Default 1:1 Aspect Ratio */
+    border: 4px solid #f0e6d6; /* Lighter frame border */
+    border-radius: 12px;
+    background-color: #ffffff; /* White background for photo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15); /* Stronger shadow for pop */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.photo-frame:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+.photo-frame img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the frame area */
+    display: none; /* Hidden by default */
+}
+
+.photo-frame .placeholder-text {
+    color: #c0b0a0; /* Lighter placeholder */
+    font-size: 1.1em;
+    font-weight: 500;
+    text-align: center;
+    padding: 10px;
+}
+
+button[type="submit"] { /* General submit button style */
+    background-color: #a38b7e; /* Earthy button color */
+    color: white;
+    padding: 18px 30px; /* Even more padding */
+    font-size: 1.3rem; /* Larger font */
+    border: none;
+    border-radius: 12px; /* Softer corners */
+    cursor: pointer;
+    width: 100%;
+    max-width: 400px; /* Limit button width */
+    font-weight: 700;
+    margin-top: 40px;
+    box-shadow: 0 8px 20px rgba(163, 139, 126, 0.5); /* Stronger shadow */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+button[type="submit"]:hover {
+    background-color: #8c7365; /* Darker hover */
+    transform: translateY(-3px); /* More pronounced lift */
+    box-shadow: 0 12px 30px rgba(163, 139, 126, 0.7); /* Even stronger shadow on hover */
+}
+

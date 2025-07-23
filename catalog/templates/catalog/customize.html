@@ -1,0 +1,217 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}Cozy Creations - Customize Your Unique Item!{% endblock %}
+
+{% block content %}
+<style>
+    /* Hero Section */
+    .hero-customize {
+        height: 350px;
+        background-image: url('https://images.unsplash.com/photo-1541701494587-5757d079313a?auto=format&fit=crop&w=1400&q=80');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        border-radius: 16px;
+        margin: 40px auto;
+        max-width: 1200px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden; /* Ensure border-radius is respected */
+    }
+
+    .hero-overlay {
+        background-color: rgba(122, 94, 94, 0.6);
+        color: white;
+        height: 100%;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        border-radius: 16px; /* Inherit from parent, or set explicitly if needed */
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+
+    .hero-overlay h1 {
+        font-size: 2.5rem;
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 15px;
+        max-width: 90%; /* Prevent overflow on small screens */
+    }
+
+    .hero-overlay p {
+        font-size: 1.2rem;
+        font-weight: 500;
+        max-width: 700px;
+        line-height: 1.5;
+    }
+
+    /* Options Grid */
+    .container {
+        max-width: 1100px;
+        margin: 50px auto;
+        padding: 0 20px;
+    }
+
+    .options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin-top: 30px;
+        justify-content: center; /* Center grid items if they don't fill the row */
+    }
+
+    .option-card {
+        background: white;
+        border-radius: 14px;
+        text-decoration: none;
+        color: inherit;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex; /* Use flexbox for card content */
+        flex-direction: column;
+    }
+
+    .option-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+    }
+
+    .option-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .option-card h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.6rem;
+        color: #7a5e5e;
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 10px; /* Added margin-bottom */
+    }
+
+    .option-card p {
+        text-align: center;
+        padding: 0 20px 25px;
+        font-size: 1rem;
+        color: #5a5a5a;
+        line-height: 1.5;
+        flex-grow: 1; /* Allows paragraph to take available space, pushing footer down */
+    }
+
+    /* ----------------------------------------------------------- */
+    /* Media Queries for Responsiveness */
+    /* ----------------------------------------------------------- */
+
+    /* Small devices (phones, 600px and down) */
+    @media (max-width: 600px) {
+        .hero-customize {
+            height: 250px; /* Shorter hero section */
+            margin: 20px auto;
+            border-radius: 10px; /* Smaller border radius */
+        }
+        .hero-overlay {
+            padding: 25px; /* Reduced padding */
+        }
+        .hero-overlay h1 {
+            font-size: 1.8rem; /* Smaller font size */
+            margin-bottom: 10px;
+        }
+        .hero-overlay p {
+            font-size: 0.95rem; /* Smaller font size */
+            max-width: 95%;
+        }
+
+        .container {
+            margin: 30px auto;
+            padding: 0 15px; /* Reduced horizontal padding */
+        }
+
+        .options {
+            grid-template-columns: 1fr; /* Single column for options */
+            gap: 20px; /* Reduced gap */
+        }
+        .option-card {
+            max-width: 320px; /* Constrain width of single cards for better appearance */
+            margin: 0 auto; /* Center individual cards */
+            border-radius: 10px; /* Smaller border radius */
+        }
+        .option-card img {
+            height: 150px; /* Shorter image height */
+        }
+        .option-card h3 {
+            font-size: 1.4rem; /* Smaller heading */
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        .option-card p {
+            padding: 0 15px 15px; /* Reduced padding */
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Medium devices (tablets, 601px to 992px) */
+    @media (min-width: 601px) and (max-width: 992px) {
+        .hero-customize {
+            height: 300px;
+            margin: 30px auto;
+        }
+        .hero-overlay h1 {
+            font-size: 2.2rem;
+        }
+        .hero-overlay p {
+            font-size: 1.1rem;
+        }
+
+        .container {
+            padding: 0 25px;
+        }
+
+        .options {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Allow 2 or 3 columns */
+            gap: 25px;
+        }
+        .option-card img {
+            height: 160px;
+        }
+        .option-card h3 {
+            font-size: 1.5rem;
+        }
+        .option-card p {
+            font-size: 0.95rem;
+        }
+    }
+</style>
+
+<div class="hero-customize">
+    <div class="hero-overlay">
+        <h1>Unleash Your Creativity! 🎨</h1>
+        <p>Select a creation below to begin your personalized journey.</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="options">
+        <a href="{% url 'customize_detail' 'puzzle' %}" class="option-card">
+            <img src="https://scontent.fpnh11-1.fna.fbcdn.net/v/t39.30808-6/476009857_122103644906754824_6186214591235934573_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeE5NNIp10kKJhVGkkT9A7yZCJZLvEmkpFwIlku8SaSkXGWSwoeIzH7RQbD563mebf_zjTR571ajbU3WAELgKdxA&_nc_ohc=zBE-ESB3bAQQ7kNvwG_6641&_nc_oc=AdnJBICRQuAC56dlCBja3JlhgozR8cEKVYyOv38eg-doz5IW_ypTnSuEKbl07efYNwA&_nc_zt=23&_nc_ht=scontent.fpnh11-1.fna&_nc_gid=peC_Lh0Ywi-mx91d-EgeNg&oh=00_AfS8_ZA6FyyrPDfGOky2KNf_HYppy6Noy_qYIwEH9ENpWA&oe=68852A39" alt="Custom Puzzles" />
+            <h3>Puzzles 🧩</h3>
+            <p>Piece together your cherished memories, one piece at a time.</p>
+        </a>
+        <a href="{% url 'customize_detail' 'keychain' %}" class="option-card">
+            <img src="https://i.pinimg.com/736x/b1/dd/0f/b1dd0f6c766541be590671a2254424df.jpg" alt="Personalized Keychains" />
+            <h3>Keychains 🔑</h3>
+            <p>Carry your special moments and loved ones with you, always.</p>
+        </a>
+        <a href="{% url 'customize_detail' 'photobooth' %}" class="option-card">
+            <img src="https://i.pinimg.com/736x/6e/77/cc/6e77cced7031e6e2c58d555d84f751b6.jpg" alt="Fun Photo Booths" />
+            <h3>Photo Booths 📸</h3>
+            <p>Capture candid joy and laughter with a personalized backdrop.</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

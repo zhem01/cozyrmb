@@ -1,0 +1,161 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}Cozy Creations - Customize Photo Booth{% endblock %}
+
+{% block content %}
+<style>
+    /* Styles specific to customize_photobooth.html content */
+
+    /* Main Content Area */
+    .welcome-container {
+        flex-grow: 1;
+        max-width: 800px;
+        margin: 80px auto;
+        padding: 40px;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .welcome-container h1 {
+        font-family: 'Playfair Display', serif; /* Changed to Playfair Display for consistency */
+        color: #5a4b45;
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .welcome-container p {
+        font-size: 1.25rem;
+        color: #7d6e66;
+        margin-bottom: 50px;
+        line-height: 1.8;
+        max-width: 600px;
+    }
+
+    .button-group {
+        display: flex;
+        flex-direction: column; /* Stack buttons on small screens */
+        gap: 30px;
+        width: 100%;
+        max-width: 500px; /* Limit button group width */
+    }
+
+    .action-button {
+        display: block; /* Make buttons block level for full width */
+        padding: 20px 30px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        text-decoration: none; /* Remove underline for links */
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        letter-spacing: 0.5px;
+        text-align: center;
+    }
+
+    .button-customize {
+        background: linear-gradient(145deg, #a38b7e, #8c7365); /* Earthy gradient */
+    }
+
+    .button-customize:hover {
+        background: linear-gradient(145deg, #8c7365, #7a5e5e);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(163, 139, 126, 0.5);
+    }
+
+    .button-upload {
+        background: linear-gradient(145deg, #8ecae6, #6a9bd8); /* Blue gradient */
+    }
+
+    .button-upload:hover {
+        background: linear-gradient(145deg, #6a9bd8, #5a7bb0);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(142, 202, 230, 0.5);
+    }
+
+    /* ----------------------------------------------------------- */
+    /* Media Queries for Responsiveness (Photo Booth Page Specific) */
+    /* ----------------------------------------------------------- */
+
+    @media (min-width: 768px) {
+        .button-group {
+            flex-direction: row; /* Side-by-side on larger screens */
+            justify-content: center;
+        }
+        .action-button {
+            width: calc(50% - 15px); /* Two columns with gap */
+        }
+    }
+
+    /* Small devices (phones, 600px and down) */
+    @media (max-width: 600px) {
+        .welcome-container {
+            margin: 40px auto;
+            padding: 25px;
+            border-radius: 15px;
+        }
+        .welcome-container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        .welcome-container p {
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+        .button-group {
+            gap: 20px;
+            max-width: 90%; /* Allow buttons to take more width */
+        }
+        .action-button {
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            border-radius: 12px;
+        }
+    }
+
+    /* Medium devices (tablets, 601px to 992px) */
+    @media (min-width: 601px) and (max-width: 992px) {
+        .welcome-container {
+            margin: 60px auto;
+            padding: 30px;
+        }
+        .welcome-container h1 {
+            font-size: 3rem;
+        }
+        .welcome-container p {
+            font-size: 1.1rem;
+        }
+        .button-group {
+            gap: 25px;
+        }
+        .action-button {
+            padding: 18px 25px;
+            font-size: 1.3rem;
+        }
+    }
+</style>
+
+<div class="welcome-container">
+    <h1>Welcome to Cozy Creations!</h1>
+    <p>Your destination for unique, personalized gifts. Choose how you'd like to bring your memories to life!</p>
+
+    <div class="button-group">
+        <a href="{% url 'customize_detail' 'photobooth' %}" class="action-button button-customize">
+            📸 Customize Your Photo Booth
+        </a>
+        <a href="{% url 'customize_detail' 'puzzle' %}" class="action-button button-upload">
+            🖼️ Upload a Single Image
+        </a>
+    </div>
+</div>
+{% endblock %}
